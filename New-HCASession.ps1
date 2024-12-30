@@ -118,11 +118,15 @@ function New-HCASession {
 
         $FourthRequest = Invoke-WebRequest @LoginParameters -ErrorAction Stop -SkipCertificateCheck
 
+        ## JWT token:
+        $jwt_token = [string](([regex]::Match($FourthRequest.Content,'<input type="hidden" name="__twj_" id="__twj_" value="(?<jwt_token>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["jwt_token"].value)
+
         # Output object:
         $ReturnObject = New-Object System.Object
         $ReturnObject | Add-Member -Type NoteProperty -Name LoginUrl -Value ($FourthRequest.BaseResponse.ResponseUri.AbsoluteUri ?? $FourthRequest.BaseResponse.RequestMessage.RequestUri.AbsoluteUri)
         $ReturnObject | Add-Member -Type NoteProperty -Name ConsumptionUrl -Value $ConsumptionUrl
         $ReturnObject | Add-Member -Type NoteProperty -Name WebSession -Value $LoginSession
+        $ReturnObject | Add-Member -Type NoteProperty -Name JWTToken -Value $jwt_token
 
         $ReturnObject
 
