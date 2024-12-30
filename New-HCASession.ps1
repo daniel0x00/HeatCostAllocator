@@ -1,9 +1,12 @@
 function New-HCASession {
     [CmdletBinding()]
-    [OutputType([psobject])]
+    [OutputType([PSCustomObject])]
     param(    
         [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
-        [string] $Uri,
+        [string] $LoginUrl,
+
+        [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
+        [string] $ConsumptionUrl,
 
         [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
         [string] $Username,
@@ -18,7 +21,7 @@ function New-HCASession {
         ##
         # First request gets the Action URL:
         $FirstRequestParameters = @{
-            Uri = $Uri
+            Uri = $LoginUrl
             Method = 'Get'
             Headers = @{
                 "Accept" = "text/xml"
@@ -115,9 +118,10 @@ function New-HCASession {
 
         $FourthRequest = Invoke-WebRequest @LoginParameters -ErrorAction Stop -SkipCertificateCheck
 
-        # Output object:            
+        # Output object:
         $ReturnObject = New-Object System.Object
-        $ReturnObject | Add-Member -Type NoteProperty -Name Uri -Value ($FourthRequest.BaseResponse.ResponseUri.AbsoluteUri ?? $FourthRequest.BaseResponse.RequestMessage.RequestUri.AbsoluteUri)
+        $ReturnObject | Add-Member -Type NoteProperty -Name LoginUrl -Value ($FourthRequest.BaseResponse.ResponseUri.AbsoluteUri ?? $FourthRequest.BaseResponse.RequestMessage.RequestUri.AbsoluteUri)
+        $ReturnObject | Add-Member -Type NoteProperty -Name ConsumptionUrl -Value $ConsumptionUrl
         $ReturnObject | Add-Member -Type NoteProperty -Name WebSession -Value $LoginSession
 
         $ReturnObject
