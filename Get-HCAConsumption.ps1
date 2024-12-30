@@ -11,6 +11,9 @@ function Get-HCAConsumption {
         [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
         [string] $JWTToken,
 
+        [Parameter(Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
+        [string] $Cuid,
+
         [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
         [ValidatePattern("^(19|20)\d{2}$")]
         [string] $BillingPeriodYear = (Get-Date).Year.ToString(),
@@ -26,7 +29,7 @@ function Get-HCAConsumption {
 
     begin { }
     process {
-
+        
     }
     end { }
 }
