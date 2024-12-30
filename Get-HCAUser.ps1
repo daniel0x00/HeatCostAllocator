@@ -14,11 +14,16 @@ function Get-HCAUser {
 
     begin { }
     process {
+        $Body = @{
+            JWT = $JWTToken
+            LANG = "en-US"
+        } | ConvertTo-Json -Depth 2
+
         $RequestParameters = @{
             Uri = $UserUrl
             Method = 'Post'  
             WebSession = $WebSession
-            Body = '{"JWT":"token","LANG":"en-US"}' -replace 'token', $JWTToken
+            Body = $Body
             ContentType = 'application/json'  
             Headers = @{
                 "Accept" = "application/json"
@@ -31,14 +36,13 @@ function Get-HCAUser {
 
         $Request = Invoke-RestMethod @RequestParameters -ErrorAction Stop -SkipCertificateCheck
 
-        # Output object:
+        # Verify if the user only has one contract. In that case we output the values right away to the output object: 
         $ReturnObject = New-Object System.Object
         $ReturnObject | Add-Member -Type NoteProperty -Name WebSession -Value $WebSession
         $ReturnObject | Add-Member -Type NoteProperty -Name JWTToken -Value $JWTToken
         $ReturnObject | Add-Member -Type NoteProperty -Name User -Value $Request
 
         $ReturnObject
-
     }
     end { }
 }
