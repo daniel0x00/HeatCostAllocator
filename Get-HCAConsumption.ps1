@@ -20,7 +20,7 @@ function Get-HCAConsumption {
 
         [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
         [ValidatePattern("^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$")]
-        [string] $SinceDate = (Get-Date).AddDays(-2).ToString("yyyy-MM-dd"),
+        [string] $SinceDate = (Get-Date).AddDays(-30).ToString("yyyy-MM-dd"),
 
         [Parameter(Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
         [ValidatePattern("^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$")]
