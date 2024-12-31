@@ -50,6 +50,9 @@ $output = @()
 # Loop through all dates and request the consumption data for each day:
 $currentDate = $startDate
 $requestedAtTimestamp = Get-Date -UFormat %s
+# Prevents to request dates in the future:
+if ($endDate -gt $todayDate) { $endDate = $todayDate }
+# Iterate through all dates in the range:
 while ($currentDate -le $endDate) {
 
     $Since = $currentDate.AddDays(-2)
