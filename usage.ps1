@@ -65,11 +65,42 @@ while ($currentDate -le $endDate) {
     $currentDate = $currentDate.AddDays(1)
 }
 
+# Explicit define the columns to be exported to the CSV file. This is needed because the `Position` property is not always present in the output.
+# Unfortunately, this approach has the disadvantage of having to manually define all the columns to be exported. It will break if the output object has new properties.
+$output = $output | Select-Object `
+                        @{n='CurEndTimestamp';e={ [datetime]::ParseExact($_.CurEnd, 'dd-MM-yyyy', $null).ToUniversalTime().Subtract([datetime]::UnixEpoch).TotalSeconds }}, `   # Represents the consumption data timestamp in unix format. Force it to be the first column so it can be used by Splunk as the event timestamp.    
+                        @{n='RequestedAtTimestamp';e={ $requestedAtTimestamp }}, `                                                                                              # Represents today's datetime in unix format.    
+                        MeterId,
+                        MeterNr,
+                        BillingPeriodId,
+                        RadNr,
+                        Position,
+                        TransferLoss,
+                        Multiply,
+                        Reduction,
+                        CalcFactor,
+                        BsDate,
+                        EsDate,
+                        BeginValue,
+                        EndValue,
+                        CValue,
+                        CCValue,
+                        CCDValue,       # This is the value that is used to calculate the consumption, after the reduction, multiplication, and transfer loss.
+                        DecPos,
+                        SValR,
+                        EvalR,
+                        serviceId,
+                        Order,
+                        ArtNr,
+                        DisplayName,
+                        Address,
+                        Zip,
+                        Cuid,
+                        CurStart,
+                        CurEnd,
+                        TotalNow        # This is the total consumption for the period for ALL meters within the CurStart and CurEnd fields. It is a repeated value for all meters, so do NOT sum it up.
+
 # Export the data to a CSV file:
-$output     | Select-Object `
-                @{n='CurEndTimestamp';e={ [datetime]::ParseExact($_.CurEnd, 'dd-MM-yyyy', $null).ToUniversalTime().Subtract([datetime]::UnixEpoch).TotalSeconds }}, `   # Represents the consumption data timestamp in unix format. Force it to be the first column so it can be used by Splunk as the event timestamp.    
-                @{n='RequestedAtTimestamp';e={ $requestedAtTimestamp }}, `                                                                                              # Represents today's datetime in unix format.    
-                *                                                                                                                                                       # Select all the properties.
-            | Sort-Object Cuid, CurEndTimestamp, RadNr
+$output     | Sort-Object Cuid, CurEndTimestamp, RadNr
             | Export-Csv -Path $filePath -NoTypeInformation -Delimiter ';'                   
 
