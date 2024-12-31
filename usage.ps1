@@ -5,6 +5,12 @@
 # The advantage of this script is that it can be used to retrieve the consumption data as a day-by-day basis, which is not possible on the official portal; thus enabling automation and data analysis.
 # It's also possible to download more billing periods of the further past, like data from 2 or 3 years ago.
 #
+# Note that ista Nederland B.V. only offers the consumption data 'as a weekly basis' and 'cumulative' on their portal, after every week has passed. Data is only available 'from the start of billing period until the last Sunday', as well as aggregated monthly.
+# Even though the script connects to their API and retrieves the data on a daily basis, it's not known when the data is sent from the doprimo-3 devices to their servers.
+# E.g. The data might be sent by the doprimo-3 devices to ista Nederland B.V. every Monday with readings on a per-day basis, and only made available in their API as a daily-basis only thereafter. However, the portal only shows the data 'until last Sunday'. 
+# It is therefore recommended to execute this script and export data every Monday, to ensure that the data is available for the previous week. 
+# Still, you will have the data broken down on a per-day basis, which is better than the 'weekly cumulative basis' as offered on the portal.
+#
 # Use it as your own risk and responsibility. No liability is assumed for any damages or losses caused by the use of this script.
 #############################################
 
