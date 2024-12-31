@@ -25,7 +25,7 @@
 $Username           = '<your_username>'     # Typically the username is an email address.
 $Password           = '<your_password>'
 ### Usually the billing period date range is from YYYY-07-01 until (YYYY+1)-06-30. Example: 2024-07-01 to 2025-06-30, for the billing period year 2024.
-$BillingPeriodYear  = '2024'
+$BillingPeriodYear  = '2025'
 $startDate          = Get-Date -Year 2024 -Month 07 -Day 01 -Hour 0 -Minute 0 -Second 0
 $endDate            = Get-Date -Year 2025 -Month 06 -Day 30 -Hour 0 -Minute 0 -Second 0
 $todayDate          = Get-Date
