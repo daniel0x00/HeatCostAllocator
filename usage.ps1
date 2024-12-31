@@ -73,6 +73,7 @@ while ($currentDate -le $endDate) {
 $output = $output | Select-Object `
                         @{n='CurEndTimestamp';e={ [datetime]::ParseExact($_.CurEnd, 'dd-MM-yyyy', $null).ToUniversalTime().Subtract([datetime]::UnixEpoch).TotalSeconds }}, `   # Represents the consumption data timestamp in unix format. Force it to be the first column so it can be used by Splunk as the event timestamp.    
                         @{n='RequestedAtTimestamp';e={ $requestedAtTimestamp }}, `                                                                                              # Represents today's datetime in unix format.    
+                        @{n='RequestedBillingPeriodYear';e={ $BillingPeriodYear }}, `
                         MeterId,
                         MeterNr,
                         BillingPeriodId,
