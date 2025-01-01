@@ -1,4 +1,4 @@
-# HeatCostAllocator heating meters readings script
+# Heat Cost Allocator (HCA) heating meters readings script
 PowerShell script to get readings of Heat Cost Allocators ([doprimo-3 heating meters](https://www.ista.com/uk-2023/technology/heat-cost-allocators/)) operated by `ista Nederland B.V.` on a **per day**, **per billing period** and **per meter** basis.
 
 This is an unofficial script. The official API is not documented and the script is based on reverse-engineering the API calls made by the official portal. Use it as your own risk and responsibility. No liability is assumed for any damages or losses caused by the use of this script.
