@@ -92,6 +92,7 @@ $fullData = $Cuids | Get-HCAConsumption -ConsumptionUrl $ConsumptionUrl -Billing
 # Unfortunately, this approach has the disadvantage of having to manually define all the columns to be exported. It will break if the output object has new properties.
 $dailyData = $dailyData | Select-Object `
                         @{n='CurEndTimestamp';e={ [datetime]::ParseExact($_.CurEnd, 'dd-MM-yyyy', $null).ToUniversalTime().Subtract([datetime]::UnixEpoch).TotalSeconds }}, `   # Represents the consumption data timestamp in unix format. Force it to be the first column so it can be used by Splunk as the event timestamp.    
+                        @{n='CurEndDatetime';e={ [datetime]::ParseExact($_.CurEnd, 'dd-MM-yyyy', $null) }}, `                                                                   # Represents the consumption data in datetime format. For sorting purposes in pwsh.
                         @{n='RequestedAtTimestamp';e={ $requestedAtTimestamp }}, `                                                                                              # Represents today's datetime in unix format.    
                         @{n='RequestedBillingPeriodYear';e={ $BillingPeriodYear }}, `
                         @{n='Period';e={ 'Daily' }}, `
@@ -127,6 +128,7 @@ $dailyData = $dailyData | Select-Object `
 
 $fullData = $fullData | Select-Object `
                         @{n='CurEndTimestamp';e={ [datetime]::ParseExact($_.CurEnd, 'dd-MM-yyyy', $null).ToUniversalTime().Subtract([datetime]::UnixEpoch).TotalSeconds }}, `   # Represents the consumption data timestamp in unix format. Force it to be the first column so it can be used by Splunk as the event timestamp.    
+                        @{n='CurEndDatetime';e={ [datetime]::ParseExact($_.CurEnd, 'dd-MM-yyyy', $null) }}, `                                                                   # Represents the consumption data in datetime format. For sorting purposes in pwsh.
                         @{n='RequestedAtTimestamp';e={ $requestedAtTimestamp }}, `                                                                                              # Represents today's datetime in unix format.    
                         @{n='RequestedBillingPeriodYear';e={ $BillingPeriodYear }}, `
                         @{n='Period';e={ 'Full' }}, `
