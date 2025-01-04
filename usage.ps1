@@ -18,6 +18,10 @@
 . ./New-HCASession.ps1
 . ./Get-HCAUser.ps1
 . ./Get-HCAConsumption.ps1
+# Use full path to these files if you're scheduling the execution of this script in a task scheduler:
+#. 'D:\HeatCostAllocator\New-HCASession.ps1'
+#. 'D:\HeatCostAllocator\Get-HCAUser.ps1'
+#. 'D:\HeatCostAllocator\Get-HCAConsumption.ps1'
 
 #############################################
 ##### Change the following variables to match your account and the desired date range:
