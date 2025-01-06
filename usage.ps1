@@ -182,3 +182,12 @@ $dailyData  | Sort-Object Cuid, CurEndTimestamp, RadNr
 
 $fullData   | Sort-Object Cuid, CurEndTimestamp, RadNr
             | Export-Csv -Path $fullFilePath -NoTypeInformation -Delimiter ';'   
+
+##### Export custom period data:
+# # run ./usage.ps1 first.
+# # then run:
+# $WebSession     = $Cuids[0].WebSession
+# $JWTToken       = $Cuids[0].JWTToken
+# $User           = $Cuids[0].User 
+# $customPeriod   = Get-HCAConsumption -ConsumptionUrl $ConsumptionUrl -BillingPeriodYear '2025' -SinceDate '2024-07-01' -EndDate '2025-06-30' -WebSession $WebSession -JWTToken $JWTToken -User $User 
+# $customPeriod | Select-Object BillingPeriodId, RadNr, Position, MeterNr, BsDate, EsDate, BeginValue, EndValue, CValue, CalcFactor, CCValue, Reduction, CCDValue | Sort-Object RadNr | Format-Table *
