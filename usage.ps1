@@ -1,8 +1,11 @@
 #############################################
+#
+# Author: Daniel Ferreira
+# Repository: https://github.com/daniel0x00/HeatCostAllocator
+#
 # This script retrieves Heat Cost Allocators (HCA) meters (doprimo-3 devices) consumption data for heating radiators of a user account on ista Nederland B.V. HCA portal.
-# The script logs in to the portal, retrieves the user addresses, and then retrieves the consumption data for each day in the specified date range.
-# The output is saved to a CSV file for the whole billing period, on a day-by-day basis and meter-by-meter.
-# The advantage of this script is that it can be used to retrieve the consumption data as a day-by-day basis, which is not possible on the official portal; thus enabling automation and data analysis.
+# Output: both a daily and full billing period consumption files. 
+# Purpose: It can be used to retrieve the consumption data as a day-by-day basis, which is not possible on the official portal; thus enabling automation and data analysis.
 #
 # Use it as your own risk and responsibility. No liability is assumed for any damages or losses caused by the use of this script.
 #############################################
@@ -28,6 +31,7 @@ $currentPath        = (Get-Location).Path
 
 #############################################
 $todayDate          = Get-Date
+$lastSunday         = (Get-Date).AddDays(-((Get-Date).DayOfWeek) % 7).Date
 $dailyFileName      = 'DailyBasis_ExportedAt_'+$todayDate.ToString("yyyy-MM-dd") + "_HCAReadings.csv"
 $fullFileName       = 'FullPeriodBasis_ExportedAt_'+$todayDate.ToString("yyyy-MM-dd") + "_HCAReadings.csv"
 $dailyFilePath      = [System.IO.Path]::Combine($currentPath, $dailyFileName)
@@ -117,7 +121,7 @@ $Cuids | Foreach-Object {
         
         $currentDate    = [datetime]::ParseExact($SinceDate, 'yyyy-MM-dd', $null)
         $endDate        = [datetime]::ParseExact($EndDate, 'yyyy-MM-dd', $null)
-        if ($endDate -gt $todayDate) { $endDate = $todayDate } 
+        if ($endDate -gt $lastSunday) { $endDate = $lastSunday } 
 
         #####
         ## Generate daily-basis consumption data:
