@@ -115,7 +115,7 @@ Unofficial (best-guess effort) explanation on how the billing is calculated:
 ```
 3. You're billed for the Units shown on the `CCDValue` column. This value is calculated as follows:
    - `(EndValue - BeginValue) * CalcFactor * ((100 - Reduction) / 100)`, then rounded to the nearest integer, as value `DecPos` enforces.
-4. The `EUR` price of the unit determined by `ista Nedarland B.V.` is not shown on the API response on portal [mijn.ista.nl](https://mijn.ista.nl/home/index). Instead, [debicasso portal](https://debicasso.istanederland.nl/login) (don't have an account? write to debicasso-administratie@ista.nl to get one) is used to see the billing details of your billing period, available by the end of October, section `Mijn dossier`, subject `Afrekening periode : 1-7-xxxx t/m 30-6-xxxx`. My understanding is that the `EUR` price per unit is calculated upon the consumption of your whole building (section #2, `Berekening eenheidsprijzen`, then `Variabele energiekosten 55,00%`), then broken down by radiator (section #3 `Overzicht meterstanden en bepaling van uw verbruik`) and then price per unit is calculated on section #4 `Uw kostenspecificatie`, sub-section `Variabele energiekosten`. Have in mind you also pay a price for the `Vloeroppervlakte` (floor area) of your building: this varies per building.
+4. The `EUR` price of the unit determined by `ista Nedarland B.V.` is not shown on the API response on portal [mijn.ista.nl](https://mijn.ista.nl/home/index). Instead, [debicasso portal](https://debicasso.istanederland.nl/login) (don't have an account? write to debicasso-administratie@ista.nl to get one) is used to see the billing details of your billing period, available by the end of October, section `Mijn dossier`, subject `Afrekening periode : 1-7-xxxx t/m 30-6-xxxx`. My understanding is that the `EUR` price per unit is calculated upon the consumption of your whole building (section #2, `Berekening eenheidsprijzen`, then `Variabele energiekosten 55,00%`), then broken down by radiator (section #3 `Overzicht meterstanden en bepaling van uw verbruik`) and then price per unit is calculated on section #4 `Overzicht van uw kosten`, lines `Variabele energiekosten` and `Overige kosten`; taking the unit prices shown in column `Prijs per eenheid`. Have in mind you also pay a price for the `Vloeroppervlakte` (floor area) of your building: this varies per building.
 
 ### Historical heating unit costs
 Sharing here the price per unit of variable costs and fixed costs for each billing period, for my building. 
@@ -126,8 +126,9 @@ Represents **55% of the bill**.
 Billing year | Billing period | Price per unit | % variation vs previous year |
 |---|---|---|---|
 | 2022 | 1-7-2021 / 30-6-2022 | 0.422241 EUR | `unknown` |
-| 2023 | 1-7-2022 / 30-6-2023 | 0.953447 EUR | **125%** |
-| 2024 | 1-7-2023 / 30-6-2024 | 1.110027 EUR | **16%** |
+| 2023 | 1-7-2022 / 30-6-2023 | 0.953447 EUR | **125.80%** |
+| 2024 | 1-7-2023 / 30-6-2024 | 1.110027 EUR | **16.42%** |
+| 2025 | 1-7-2024 / 30-6-2025 | 0,554998 EUR | **-50.00%%** |
 
 #### Fixed energy cost (Vaste energiekosten)
 Represents **45% of the bill**. 
@@ -137,3 +138,4 @@ Billing year | Billing period | Price per unit | % variation vs previous year |
 | 2022 | 1-7-2021 / 30-6-2022 | 0.076722 EUR | `unknown` |
 | 2023 | 1-7-2022 / 30-6-2023 | 0.130516 EUR | **70.12%** |
 | 2024 | 1-7-2023 / 30-6-2024 | 0.116517 EUR | **-10.73%** |
+| 2025 | 1-7-2024 / 30-6-2025 | 0.077263 EUR | **-33.58%** |
