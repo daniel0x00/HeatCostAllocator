@@ -128,7 +128,7 @@ Billing year | Billing period | Price per unit | % variation vs previous year |
 | 2022 | 1-7-2021 / 30-6-2022 | 0.422241 EUR | `unknown` |
 | 2023 | 1-7-2022 / 30-6-2023 | 0.953447 EUR | **125.80%** |
 | 2024 | 1-7-2023 / 30-6-2024 | 1.110027 EUR | **16.42%** |
-| 2025 | 1-7-2024 / 30-6-2025 | 0,554998 EUR | **-50.00%** |
+| 2025 | 1-7-2024 / 30-6-2025 | 0.554998 EUR | **-50.00%** |
 
 #### Fixed energy cost (Vaste energiekosten)
 Represents **45% of the bill**. 
