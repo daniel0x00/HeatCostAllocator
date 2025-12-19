@@ -38,11 +38,11 @@ function New-HCASession {
 
         
         ##
-        # Second request sends the username:
+        # Second request sends the username & password:
         $LoginParameters = @{
             Uri = $FormAction
             Method = 'Post'
-            Body = "username=$Username"
+            Body = "username=$Username&password=$Password&credentialId="
             WebSession = $LoginSession
             ContentType = 'application/x-www-form-urlencoded;charset=UTF-8'
             Headers = @{
@@ -51,6 +51,8 @@ function New-HCASession {
                 "Sec-Fetch-Mode" = "navigate"
                 "Sec-Fetch-Dest" = "document"
                 "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"
+                "Origin" = "https://login.ista.com"
+                "Referer" = $FormAction
             }
         }
 
@@ -62,31 +64,12 @@ function New-HCASession {
         ##
 
 
-        ##
-        # Third request sends the password:
-        $LoginParameters = @{
-            Uri = $FormAction
-            Method = 'Post'
-            Body = "password=$Password"
-            WebSession = $LoginSession
-            ContentType = 'application/x-www-form-urlencoded;charset=UTF-8'
-            Headers = @{
-                "Accept" = "text/xml"
-                "Sec-Fetch-Site" = "same-origin"
-                "Sec-Fetch-Mode" = "navigate"
-                "Sec-Fetch-Dest" = "document"
-                "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"
-            }
-        }
-
-        $ThirdRequest = Invoke-WebRequest @LoginParameters -ErrorAction Stop -SkipCertificateCheck 
-
         ## Login data: 
-        $oidc_url = [string](([regex]::Match($ThirdRequest.Content,'<FORM[^>]*\sACTION="(?<oidc_url>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_url"].value)
-        $oidc_code = [string](([regex]::Match($ThirdRequest.Content,'<INPUT TYPE="HIDDEN" NAME="code" VALUE="(?<oidc_code>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_code"].value)
-        $oidc_iss = [string](([regex]::Match($ThirdRequest.Content,'<INPUT TYPE="HIDDEN" NAME="iss" VALUE="(?<oidc_iss>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_iss"].value)
-        $oidc_state = [string](([regex]::Match($ThirdRequest.Content,'<INPUT TYPE="HIDDEN" NAME="state" VALUE="(?<oidc_state>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_state"].value)
-        $oidc_session_state = [string](([regex]::Match($ThirdRequest.Content,'<INPUT TYPE="HIDDEN" NAME="session_state" VALUE="(?<oidc_session_state>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_session_state"].value)
+        $oidc_url = [string](([regex]::Match($SecondRequest.Content,'<FORM[^>]*\sACTION="(?<oidc_url>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_url"].value)
+        $oidc_code = [string](([regex]::Match($SecondRequest.Content,'<INPUT TYPE="HIDDEN" NAME="code" VALUE="(?<oidc_code>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_code"].value)
+        $oidc_iss = [string](([regex]::Match($SecondRequest.Content,'<INPUT TYPE="HIDDEN" NAME="iss" VALUE="(?<oidc_iss>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_iss"].value)
+        $oidc_state = [string](([regex]::Match($SecondRequest.Content,'<INPUT TYPE="HIDDEN" NAME="state" VALUE="(?<oidc_state>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_state"].value)
+        $oidc_session_state = [string](([regex]::Match($SecondRequest.Content,'<INPUT TYPE="HIDDEN" NAME="session_state" VALUE="(?<oidc_session_state>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["oidc_session_state"].value)
         Write-Verbose "[New-HCASession] Third request oidc_url: $oidc_url" 
         Write-Verbose "[New-HCASession] Third request oidc_code: $oidc_code" 
         Write-Verbose "[New-HCASession] Third request oidc_iss: $oidc_iss" 
@@ -110,17 +93,19 @@ function New-HCASession {
                 "Sec-Fetch-Mode" = "navigate"
                 "Sec-Fetch-Dest" = "document"
                 "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"
+                "Origin" = "https://login.ista.com"
+                "Referer" = "https://login.ista.com/"
             }
         }
 
-        $FourthRequest = Invoke-WebRequest @LoginParameters -ErrorAction Stop -SkipCertificateCheck
+        $FinalRequest = Invoke-WebRequest @LoginParameters -ErrorAction Stop -SkipCertificateCheck
 
         ## JWT token:
-        $jwt_token = [string](([regex]::Match($FourthRequest.Content,'<input type="hidden" name="__twj_" id="__twj_" value="(?<jwt_token>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["jwt_token"].value)
+        $jwt_token = [string](([regex]::Match($FinalRequest.Content,'<input type="hidden" name="__twj_" id="__twj_" value="(?<jwt_token>[^"]+)"', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)).groups["jwt_token"].value)
 
         # Output object:
         $ReturnObject = New-Object System.Object
-        $ReturnObject | Add-Member -Type NoteProperty -Name LoginUrl -Value ($FourthRequest.BaseResponse.ResponseUri.AbsoluteUri ?? $FourthRequest.BaseResponse.RequestMessage.RequestUri.AbsoluteUri)
+        $ReturnObject | Add-Member -Type NoteProperty -Name LoginUrl -Value ($FinalRequest.BaseResponse.ResponseUri.AbsoluteUri ?? $FinalRequest.BaseResponse.RequestMessage.RequestUri.AbsoluteUri)
         $ReturnObject | Add-Member -Type NoteProperty -Name WebSession -Value $LoginSession
         $ReturnObject | Add-Member -Type NoteProperty -Name JWTToken -Value $jwt_token
 
